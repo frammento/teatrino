@@ -1,0 +1,13 @@
+COSA FUNZIONA
+
+teatrino-interfaccia.ino -> testato I/O base e logica mediante pulsanti e LED
+
+
+
+COSA VA FATTO
+
+-Costruire H-Bridge o soluzione alternativa per far ruotare motore DC Tenda in due direzioni
+-Circuiti con transistor per alimentazione 12V strisce LED
+-Implementare comunicazione tra controller e interfaccia
+
+teatrino-controller.ino -> Pianificare MENU e interazione utente
