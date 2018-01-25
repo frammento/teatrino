@@ -1,20 +1,11 @@
 /*
-   Gruppo "cena mensile del martedì all'ostello" presenta:
+   Gruppo "cena mensile del martedi' all'ostello" presenta:
    INTERFACCIA automazione per teatrino marionette/burattini
    scheda: Arduino Uno/Duemilanove/simili (20 in-out)
 */
 
-/*
-   CONTROLLER (con attiny84 che ha 10-11 pin disponibili)
-   interruttore ON-OFF -> chiude l'alimentazione
-   display 4 linee per 16 caratteri -> 6 DO
-   potenziometro per modifica valori RGB -> 1 AI
-   pulsante per conferma valori immessi -> 1 DI
-   i2c -> 2 DO
-*/
 
-
-// • Sipario
+// -- Sipario
 #define tendaApriPin 12 // attiva un lato dell'H-Bridge
 #define tendaChiudiPin 13 // attiva l'altro lato dell'H-Bridge
 #define tendaApriPulsPin A0 // pulsante apertura
@@ -23,34 +14,35 @@
 #define tendaFinecorsaChiudiPin A3 // segnala completa chiusura
 bool statoFinaleTenda = HIGH; // corrisponde a tenda chiusa
 
-// • Luci fronte
+// -- Luci fronte
 #define luciFrontePin 7 // con circuito transistor per 12V striscia LED bianco
 #define luciFrontePulsPin 8 // pulsante luci fronte
 bool statoLuciFronte = LOW; // luci spente
 
-// • Luci di scena
+// -- Luci di scena
 #define luciScenaRossoPin 3 // PWM -> collegato a circuito transistor per 12V LED rosso
 #define luciScenaVerdePin 5 // PWM -> collegato a circuito transistor per 12V LED verde
 #define luciScenaBluPin 6 // PWM -> collegato a circuito transistor per 12V LED blu
-byte coloreLuciScena[3] = {0, 100, 0}; // valori RGB per luci spente
+byte coloreLuciScena[3] = {0, 0, 0}; // valori RGB per luci spente
 
-// • Fondale
+// -- Fondale
 #define luciFondaleRossoPin 9 // PWM -> collegato a circuito transistor per 12V LED rosso
 #define luciFondaleVerdePin 10 // PWM -> collegato a circuito transistor per 12V LED verde
 #define luciFondaleBluPin 11 // PWM -> collegato a circuito transistor per 12V LED blu
-byte coloreLuciFondale[3] = {0, 0, 100}; // valori RGB per luci spente
+byte coloreLuciFondale[3] = {0, 0, 0}; // valori RGB per luci spente
 #define servoFondalePin 4 // pin del servo che fa girare il fondale
 bool avanzaServoFondale = LOW;
-// • Occhio di bue
+
+// -- Occhio di bue
 #define XservoOcchioPin 1 // pin del servo asse x
 #define YservoOcchioPin 2// pin del servo asse y
 byte posizioneOcchio[2] = {128, 128}; // valori a mezza scala per posizione centrale (dipende dal servo)
 
-// • Sparabolle
+// -- Sparabolle
 #define bollePin 0  // circuito con transistor che alimenta la sparabolle elettrica
 bool statoBolle = LOW;
 
-// • Comunicazione con controller
+// -- Comunicazione con controller
 #define i2cSDA A4 // dati
 #define i2cSDC A5 // clock
 
@@ -65,7 +57,7 @@ Servo servoOcchioY;  // crea l'oggetto servoOcchioY
 // ------------------------------------------------
 
 void setup() {
-  // • Sipario
+  // -- Sipario
   pinMode(tendaApriPin, OUTPUT);
   pinMode(tendaChiudiPin, OUTPUT);
   pinMode(tendaApriPulsPin, INPUT_PULLUP);
@@ -73,30 +65,30 @@ void setup() {
   pinMode(tendaFinecorsaApriPin, INPUT_PULLUP);
   pinMode(tendaFinecorsaChiudiPin, INPUT_PULLUP);
 
-  // • Luci fronte
+  // -- Luci fronte
   pinMode(luciFrontePin, OUTPUT);
   pinMode(luciFrontePulsPin, INPUT_PULLUP);
 
-  // • Luci di scena
+  // -- Luci di scena
   pinMode(luciScenaRossoPin, OUTPUT); // per completezza, ma inutili usando analogWrite
   pinMode(luciScenaVerdePin, OUTPUT);
   pinMode(luciScenaBluPin, OUTPUT);
 
-  // • Fondale
+  // -- Fondale
   pinMode(luciFondaleRossoPin, OUTPUT); // per completezza, ma inutili usando analogWrite
   pinMode(luciFondaleVerdePin, OUTPUT);
   pinMode(luciFondaleBluPin, OUTPUT);
 
   servoFondale.attach(servoFondalePin);
 
-  // • Occhio di bue
+  // -- Occhio di bue
   servoOcchioX.attach(XservoOcchioPin);
   servoOcchioY.attach(YservoOcchioPin);
 
-  // • Sparabolle
+  // -- Sparabolle
   pinMode(bollePin, OUTPUT);
 
-  // • Comunicazione, con controller pensato come master
+  // -- Comunicazione, con controller pensato come master
   Wire.begin(8); // unisciti al bus i2c con indirizzo 8
   Wire.onReceive(riceviControllo); // chiama riceviControllo se ricevi da master i2c
   Wire.onRequest(trasmettiDati);  // eseguita ogni volta che il Controllore/Master richiede dati
@@ -147,7 +139,7 @@ void chiudiSipario() {
 
 // Luci fronte
 void luciFronte() {
-  if (digitalRead(luciFrontePulsPin) == LOW) { // il pulsante è stato schiacciato
+  if (digitalRead(luciFrontePulsPin) == LOW) { // il pulsante e' stato schiacciato
     statoLuciFronte = !statoLuciFronte; // inverte lo stato della luce
     digitalWrite(luciFrontePin, statoLuciFronte);
     delay(100); // per evitare accensioni-spegnimenti in serie
@@ -221,4 +213,3 @@ void occhio() {}
 void sparabolle() {
   // digitalWrite(bollePin, HIGH);
 }
-
